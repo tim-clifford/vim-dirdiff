@@ -16,10 +16,10 @@ command! -nargs=0 DirDiffUpdate call <SID>DirDiffUpdate ()
 command! -nargs=0 DirDiffQuit call <SID>DirDiffQuit ()
 
 " The following comamnds can be used in the Vim diff mode:
-" 
+"
 " \dg - Diff get: maps to :diffget<CR>
 " \dp - Diff put: maps to :diffput<CR>
-" \dj - Diff next: (think j for down) 
+" \dj - Diff next: (think j for down)
 " \dk - Diff previous: (think k for up)
 
 if !exists("g:DirDiffEnableMappings")
@@ -44,7 +44,7 @@ endif
 " eg. in your .vimrc file: let g:DirDiffExcludes = "CVS,*.class,*.o"
 "                          let g:DirDiffIgnore = "Id:"
 "                          " ignore white space in diff
-"                          let g:DirDiffAddArgs = "-w" 
+"                          let g:DirDiffAddArgs = "-w"
 "
 " You can set the pattern that diff excludes.  Defaults to the CVS directory
 if !exists("g:DirDiffExcludes")
@@ -171,7 +171,7 @@ elseif has("win32")
     " Windows is somewhat stupid since "del" can only remove the files, not
     " the directory.  The command "rd" would remove files recursively, but it
     " doesn't really work on a file (!).  where is the deltree command???
-     
+
     let s:DirDiffDeleteDirCmd = "rd"
     " rd is by default prompting, we need to handle this in a different way
     let s:DirDiffDeleteDirFlags = "/s"
@@ -268,11 +268,11 @@ function! <SID>DirDiff(srcA, srcB)
     call append(0, "[A]=". DirDiffAbsSrcA)
     call append(1, "[B]=". DirDiffAbsSrcB)
     if g:DirDiffEnableMappings
-        call append(2, "Usage:   <Enter>/'o'=open,'s'=sync,'<Leader>dg'=diffget,'<Leader>dp'=diffput,'<Leader>dj'=next,'<Leader>dk'=prev, 'q'=quit")
+        call append(2, "Usage:   <Enter>/'k'=open,'s'=sync,'<Leader>dg'=diffget,'<Leader>dp'=diffput,'n'=next,'p'=prev, 'q'=quit")
     else
-        call append(2, "Usage:   <Enter>/'o'=open,'s'=sync,'q'=quit")
+        call append(2, "Usage:   <Enter>/'k'=open,'s'=sync,'q'=quit")
     endif
-    call append(3, "Options: 'u'=update,'x'=set excludes,'i'=set ignore,'a'=set args, 'h'=hex mode, 'w'=wrap mode")
+    call append(3, "Options: 'u'=update,'x'=set excludes,'I'=set ignore,'a'=set args, 'h'=hex mode, 'w'=wrap mode")
     call append(4, "Diff Args:" . cmdarg)
     call append(5, "")
     " go to the beginning of the file
@@ -289,20 +289,20 @@ function! <SID>DirDiff(srcA, srcB)
     " Set up local key bindings
     " 'n' actually messes with the search next pattern, I think using \dj and
     " \dk is enough.  Otherwise, use j,k, and enter.
-"    nnoremap <buffer> n :call <SID>DirDiffNext()<CR>
-"    nnoremap <buffer> p :call <SID>DirDiffPrev()<CR>
+    nnoremap <buffer> n :call <SID>DirDiffNext()<CR>
+    nnoremap <buffer> p :call <SID>DirDiffPrev()<CR>
     nnoremap <buffer> s :. call <SID>DirDiffSync()<CR>
     vnoremap <buffer> s :call <SID>DirDiffSync()<CR>
     nnoremap <buffer> u :call <SID>DirDiffUpdate()<CR>
     nnoremap <buffer> x :call <SID>ChangeExcludes()<CR>
     nnoremap <buffer> a :call <SID>ChangeArguments()<CR>
-    nnoremap <buffer> i :call <SID>ChangeIgnore()<CR>
+    nnoremap <buffer> I :call <SID>ChangeIgnore()<CR>
     nnoremap <buffer> h :call <SID>DirDiffHexmode()<CR>
     nnoremap <buffer> w :call <SID>DirDiffWrapmode()<CR>
     nnoremap <buffer> q :call <SID>DirDiffQuit()<CR>
 
-    nnoremap <buffer> o    :call <SID>DirDiffOpen()<CR>
-    nnoremap <buffer> <CR>  :call <SID>DirDiffOpen()<CR>  
+    nnoremap <buffer> k    :call <SID>DirDiffOpen()<CR>
+    nnoremap <buffer> <CR>  :call <SID>DirDiffOpen()<CR>
     nnoremap <buffer> <2-Leftmouse> :call <SID>DirDiffOpen()<CR>
     call <SID>SetupSyntax()
 
@@ -313,7 +313,7 @@ endfunction
 " Set up syntax highlighing for the diff window
 "function! <SID>SetupSyntax()
 function! <SID>SetupSyntax()
-  if has("syntax") && exists("g:syntax_on") 
+  if has("syntax") && exists("g:syntax_on")
       "&& !has("syntax_items")
     syn match DirDiffSrcA               "\[A\]"
     syn match DirDiffSrcB               "\[B\]"
@@ -706,7 +706,7 @@ function! <SID>DirDiffSyncHelper(AB, line)
             let fileFrom = fileB
             let fileTo = fileA
         endif
-    else 
+    else
         echo "There is no diff here!"
         " Error
         return 1
@@ -926,7 +926,7 @@ function! <SID>Delete(fileFromOrig)
 endfunction
 
 " The given line begins with the "Only in"
-function! <SID>IsOnly(line)	
+function! <SID>IsOnly(line)
     return (match(a:line, "^ *" . s:DirDiffDiffOnlyLine . "\\|^==> " . s:DirDiffDiffOnlyLine ) == 0)
 endfunction
 
@@ -1048,28 +1048,28 @@ function! <SID>GetDiffStrings()
     "echo "tmp1: " . tmp1
     "echo "tmp1rx: " . tmp1rx
     let regex = '\(^.*\)' . tmp1rx . '\(.*\)' . "test"
-	let s:DirDiffDiffOnlyLine = substitute( getline(1), regex, '\1', '') 
-	let s:DirDiffDiffOnlyLineCenter = substitute( getline(1), regex, '\2', '') 
+	let s:DirDiffDiffOnlyLine = substitute( getline(1), regex, '\1', '')
+	let s:DirDiffDiffOnlyLineCenter = substitute( getline(1), regex, '\2', '')
     "echo "DirDiff Only: " . s:DirDiffDiffOnlyLine
-	
+
 	bd
 
 	" Now let's get the Differ string
     "echo "Getting the diff in GetDiffStrings"
-	
+
 	silent exe "!echo testdifferent > \"" . tmp2 . s:sep . "test" . "\""
 	silent exe "!" . g:DirDiffLangString . "diff -r --brief \"" . tmp1 . "\" \"" . tmp2 . "\" > \"" . tmpdiff . "\""
-	
+
 	silent exe "split ". tmpdiff
-	let s:DirDiffDifferLine = substitute( getline(1), tmp1rx . ".*$", "", '') 
+	let s:DirDiffDifferLine = substitute( getline(1), tmp1rx . ".*$", "", '')
     " Note that the diff on cygwin may output '/' instead of '\' for the
     " separator, so we need to accomodate for both cases
     let andrx = "^.*" . tmp1rx . "[\\\/]test\\(.*\\)" . tmp2rx . "[\\\/]test.*$"
     let endrx = "^.*" . tmp1rx . "[\\\/]test.*" . tmp2rx . "[\\\/]test\\(.*$\\)"
     "echo "andrx : " . andrx
     "echo "endrx : " . endrx
-	let s:DirDiffDifferAndLine = substitute( getline(1), andrx , "\\1", '') 
-    let s:DirDiffDifferEndLine = substitute( getline(1), endrx, "\\1", '') 
+	let s:DirDiffDifferAndLine = substitute( getline(1), andrx , "\\1", '')
+    let s:DirDiffDifferEndLine = substitute( getline(1), endrx, "\\1", '')
 
 	"echo "s:DirDiffDifferLine = " . s:DirDiffDifferLine
 	"echo "s:DirDiffDifferAndLine = " . s:DirDiffDifferAndLine
